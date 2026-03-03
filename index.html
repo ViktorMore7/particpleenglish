@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Participles Adventure Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #FFD700 0%, #FF6B6B 50%, #4ECDC4 100%);
+            min-height: 100vh;
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .input-field {
+            transition: all 0.3s ease;
+            border: 3px solid #ddd;
+        }
+        
+        .input-field:focus {
+            border-color: #4ECDC4;
+            box-shadow: 0 0 0 4px rgba(78, 205, 196, 0.3);
+        }
+        
+        .btn {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .correct-answer {
+            background-color: #C8E6C9;
+            border-color: #81C784;
+            color: #2E7D32;
+        }
+        
+        .incorrect-answer {
+            background-color: #FFCDD2;
+            border-color: #E57373;
+            color: #C62828;
+        }
+        
+        .emoji-decoration {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .progress-bar-container {
+            background: #E0E0E0;
+            border-radius: 12px;
+            height: 16px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #4ECDC4, #FF6B6B);
+            height: 100%;
+            border-radius: 12px;
+            transition: width 0.5s ease;
+        }
+        
+        .feedback-message {
+            min-height: 60px;
+            transition: all 0.3s ease;
+        }
+        
+        @media (max-width: 640px) {
+            .card {
+                padding: 1.5rem;
+            }
+            
+            .emoji-decoration {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body class="p-4">
+    <div class="max-w-3xl mx-auto">
+        <!-- Header Section -->
+        <div class="text-center mb-8">
+            <div class="emoji-decoration">✨🎓🗣️</div>
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-2 text-shadow">
+                Participles Adventure! 🌟
+            </h1>
+            <p class="text-white text-lg md:text-xl font-medium shadow-sm">
+                Learn Present and Past Participles the fun way!
+            </p>
+        </div>
+
+        <!-- Quiz Card -->
+        <div class="card p-6 md:p-8 mb-6">
+            <!-- Progress Section -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-lg font-semibold text-gray-700">
+                        <i data-lucide="progress" class="inline-block mr-2 w-5 h-5"></i>
+                        Progress
+                    </h3>
+                    <span class="text-lg font-bold text-gray-800">
+                        Score: <span id="current-score">0</span> / <span id="total-verbs">0</span>
+                    </span>
+                </div>
+                <div class="progress-bar-container">
+                    <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+                </div>
+                <p id="progress-text" class="text-center text-gray-600 mt-2">
+                    Verb 1 of <span id="total-verbs-display">0</span>
+                </p>
+            </div>
+
+            <!-- Current Verb Card -->
+            <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6 mb-6 border-4 border-dashed border-blue-200">
+                <div class="text-center mb-4">
+                    <h2 class="text-3xl md:text-4xl font-bold text-blue-600 mb-2">
+                        Base Form: <span id="base-verb" class="text-purple-700">go</span>
+                    </h2>
+                    <p id="verb-meaning" class="text-gray-600 italic">"to move"</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white rounded-xl p-4 border-2 border-gray-200">
+                        <label for="present-participle" class="block text-sm font-bold text-gray-700 mb-2">
+                            <i data-lucide="trending-up" class="inline-block mr-2 w-4 h-4 text-green-500"></i>
+                            Present Participle (-ing)
+                        </label>
+                        <input 
+                            type="text" 
+                            id="present-participle" 
+                            class="w-full input-field rounded-lg p-3 text-lg focus:ring-2 focus:ring-blue-400"
+                            placeholder="e.g., going"
+                        >
+                        <p class="text-xs text-gray-500 mt-1">Hint: Add -ing to the verb</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-4 border-2 border-gray-200">
+                        <label for="past-participle" class="block text-sm font-bold text-gray-700 mb-2">
+                            <i data-lucide="trending-down" class="inline-block mr-2 w-4 h-4 text-red-500"></i>
+                            Past Participle
+                        </label>
+                        <input 
+                            type="text" 
+                            id="past-participle" 
+                            class="w-full input-field rounded-lg p-3 text-lg focus:ring-2 focus:ring-red-400"
+                            placeholder="e.g., gone"
+                        >
+                        <p class="text-xs text-gray-500 mt-1">Hint: Often ends in -ed or -en</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feedback Section -->
+            <div id="feedback-section" class="feedback-message bg-gray-50 rounded-xl p-4 mb-6 text-center hidden">
+                <h3 id="feedback-title" class="font-bold text-lg mb-2"></h3>
+                <p id="feedback-text" class="text-gray-700"></p>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex flex-wrap justify-center gap-3">
+                <button 
+                    id="prev-btn" 
+                    class="btn bg-gray-400 text-white px-6 py-3 rounded-xl font-semibold flex items-center"
+                >
+                    <i data-lucide="arrow-left" class="mr-2 w-5 h-5"></i>
+                    Previous
+                </button>
+                
+                <button 
+                    id="check-btn" 
+                    class="btn bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-xl font-semibold flex items-center"
+                >
+                    <i data-lucide="check-circle" class="mr-2 w-5 h-5"></i>
+                    Check Answer
+                </button>
+                
+                <button 
+                    id="next-btn" 
+                    class="btn bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-xl font-semibold flex items-center"
+                >
+                    Next
+                    <i data-lucide="arrow-right" class="ml-2 w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Reset Button -->
+            <div class="mt-6 text-center">
+                <button 
+                    id="reset-btn" 
+                    class="btn bg-red-400 hover:bg-red-500 text-white px-6 py-2 rounded-lg font-medium text-sm flex items-center mx-auto"
+                >
+                    <i data-lucide="rotate-cw" class="mr-2 w-4 h-4"></i>
+                    Restart Quiz
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions Section -->
+        <div class="card p-6 mb-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                <i data-lucide="info" class="mr-3 w-6 h-6 text-blue-500"></i>
+                How to Play
+            </h3>
+            <div class="space-y-3 text-gray-700">
+                <div class="flex items-start">
+                    <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 font-bold text-sm">1</span>
+                    <p>Read the base form of the verb shown in large text</p>
+                </div>
+                <div class="flex items-start">
+                    <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 font-bold text-sm">2</span>
+                    <p>Type the present participle (-ing form) in the first box</p>
+                </div>
+                <div class="flex items-start">
+                    <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 font-bold text-sm">3</span>
+                    <p>Type the past participle in the second box</p>
+                </div>
+                <div class="flex items-start">
+                    <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 font-bold text-sm">4</span>
+                    <p>Click "Check Answer" to see if you're right</p>
+                </div>
+                <div class="flex items-start">
+                    <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 font-bold text-sm">5</span>
+                    <p>Click "Next" to move to the next verb</p>
+                </div>
+                <div class="flex items-start">
+                    <span class="bg-blue-100 text-blue-800 rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0 font-bold text-sm">6</span>
+                    <p>Try to get the highest score possible!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Final Results Modal (Hidden by default) -->
+        <div id="results-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-3xl p-8 max-w-lg w-full mx-4 card">
+                <div class="text-center mb-6">
+                    <div class="emoji-decoration">🎉🏆🎈</div>
+                    <h2 class="text-4xl font-bold text-gray-800 mb-2">Quiz Complete!</h2>
+                    <p class="text-xl text-gray-600">Amazing job!</p>
+                </div>
+                
+                <div class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-6 mb-6 text-center">
+                    <p class="text-5xl font-bold text-yellow-600 mb-2" id="final-score">0/0</p>
+                    <p class="text-gray-700 font-semibold">Your Final Score</p>
+                </div>
+                
+                <div class="space-y-4 mb-6">
+                    <div class="bg-green-50 rounded-xl p-4 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <i data-lucide="star" class="text-yellow-500 mr-3 w-6 h-6"></i>
+                            <span class="font-medium text-gray-700">Correct Answers</span>
+                        </div>
+                        <span id="correct-count" class="font-bold text-green-600 text-xl">0</span>
+                    </div>
+                    
+                    <div class="bg-red-50 rounded-xl p-4 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <i data-lucide="circle-alert" class="text-red-500 mr-3 w-6 h-6"></i>
+                            <span class="font-medium text-gray-700">Incorrect Answers</span>
+                        </div>
+                        <span id="incorrect-count" class="font-bold text-red-600 text-xl">0</span>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <p id="final-message" class="text-gray-700 mb-6 font-medium italic">You did great!</p>
+                    <button 
+                        id="restart-btn-modal" 
+                        class="btn bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-xl font-semibold w-full"
+                    >
+                        Play Again
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Verb data as provided
+        const verbs = [
+            // Regular verbs
+            { base: "play", presentParticiple: "playing", pastParticiple: "played", meaning: "to engage in fun activity" },
+            { base: "walk", presentParticiple: "walking", pastParticiple: "walked", meaning: "to move on foot" },
+            { base: "jump", presentParticiple: "jumping", pastParticiple: "jumped", meaning: "to push off ground" },
+            { base: "talk", presentParticiple: "talking", pastParticiple: "talked", meaning: "to speak" },
+            { base: "clean", presentParticiple: "cleaning", pastParticiple: "cleaned", meaning: "to make clean" },
+            { base: "study", presentParticiple: "studying", pastParticiple: "studied", meaning: "to learn" },
+            { base: "cry", presentParticiple: "crying", pastParticiple: "cried", meaning: "to weep" },
+            { base: "try", presentParticiple: "trying", pastParticiple: "tried", meaning: "to attempt" },
+            { base: "stop", presentParticiple: "stopping", pastParticiple: "stopped", meaning: "to cease" },
+            { base: "plan", presentParticiple: "planning", pastParticiple: "planned", meaning: "to arrange" },
+            { base: "prefer", presentParticiple: "preferring", pastParticiple: "preferred", meaning: "to like better" },
+            { base: "admit", presentParticiple: "admitting", pastParticiple: "admitted", meaning: "to confess" },
+            { base: "occur", presentParticiple: "occurring", pastParticiple: "occurred", meaning: "to happen" },
+            { base: "refer", presentParticiple: "referring", pastParticiple: "referred", meaning: "to mention" },
+            { base: "happen", presentParticiple: "happening", pastParticiple: "happened", meaning: "to take place" },
+            { base: "listen", presentParticiple: "listening", pastParticiple: "listened", meaning: "to hear attentively" },
+            { base: "open", presentParticiple: "opening", pastParticiple: "opened", meaning: "to unclose" },
+            { base: "offer", presentParticiple: "offering", pastParticiple: "offered", meaning: "to present" },
+            { base: "visit", presentParticiple: "visiting", pastParticiple: "visited", meaning: "to go see" },
+            { base: "enter", presentParticiple: "entering", pastParticiple: "entered", meaning: "to go in" },
+            // Irregular verbs
+            { base: "be", presentParticiple: "being", pastParticiple: "been", meaning: "to exist" },
+            { base: "have", presentParticiple: "having", pastParticiple: "had", meaning: "to possess" },
+            { base: "do", presentParticiple: "doing", pastParticiple: "done", meaning: "to perform" },
+            { base: "go", presentParticiple: "going", pastParticiple: "gone", meaning: "to move" },
+            { base: "come", presentParticiple: "coming", pastParticiple: "come", meaning: "to arrive" },
+            { base: "see", presentParticiple: "seeing", pastParticiple: "seen", meaning: "to perceive with eyes" },
+            { base: "eat", presentParticiple: "eating", pastParticiple: "eaten", meaning: "to consume food" },
+            { base: "drink", presentParticiple: "drinking", pastParticiple: "drunk", meaning: "to swallow liquid" },
+            { base: "sleep", presentParticiple: "sleeping", pastParticiple: "slept", meaning: "to rest" },
+            { base: "run", presentParticiple: "running", pastParticiple: "run", meaning: "to move fast" },
+            { base: "write", presentParticiple: "writing", pastParticiple: "written", meaning: "to form letters" },
+            { base: "read", presentParticiple: "reading", pastParticiple: "read", meaning: "to interpret text" },
+            { base: "speak", presentParticiple: "speaking", pastParticiple: "spoken", meaning: "to talk" },
+            { base: "take", presentParticiple: "taking", pastParticiple: "taken", meaning: "to grasp" },
+            { base: "give", presentParticiple: "giving", pastParticiple: "given", meaning: "to hand over" },
+            { base: "make", presentParticiple: "making", pastParticiple: "made", meaning: "to create" },
+            { base: "find", presentParticiple: "finding", pastParticiple: "found", meaning: "to locate" },
+            { base: "keep", presentParticiple: "keeping", pastParticiple: "kept", meaning: "to retain" },
+            { base: "leave", presentParticiple: "leaving", pastParticiple: "left", meaning: "to depart" },
+            { base: "begin", presentParticiple: "beginning", pastParticiple: "begun", meaning: "to start" },
+            { base: "break", presentParticiple: "breaking", pastParticiple: "broken", meaning: "to separate" },
+            { base: "choose", presentParticiple: "choosing", pastParticiple: "chosen", meaning: "to select" },
+            { base: "drive", presentParticiple: "driving", pastParticiple: "driven", meaning: "to operate a vehicle" },
+            { base: "fly", presentParticiple: "flying", pastParticiple: "flown", meaning: "to move through air" },
+            { base: "forget", presentParticiple: "forgetting", pastParticiple: "forgotten", meaning: "to not remember" },
+            { base: "get", presentParticiple: "getting", pastParticiple: "gotten", meaning: "to obtain" },
+            { base: "hear", presentParticiple: "hearing", pastParticiple: "heard", meaning: "to perceive sound" },
+            { base: "know", presentParticiple: "knowing", pastParticiple: "known", meaning: "to have knowledge" },
+            { base: "meet", presentParticiple: "meeting", pastParticiple: "met", meaning: "to encounter" },
+            { base: "ride", presentParticiple: "riding", pastParticiple: "ridden", meaning: "to sit on and control" },
+            { base: "sing", presentParticiple: "singing", pastParticiple: "sung", meaning: "to make musical sounds" },
+            { base: "sit", presentParticiple: "sitting", pastParticiple: "sat", meaning: "to be seated" },
+            { base: "swim", presentParticiple: "swimming", pastParticiple: "swum", meaning: "to move in water" },
+            { base: "tell", presentParticiple: "telling", pastParticiple: "told", meaning: "to narrate" },
+            { base: "think", presentParticiple: "thinking", pastParticiple: "thought", meaning: "to ponder" },
+            { base: "understand", presentParticiple: "understanding", pastParticiple: "understood", meaning: "to comprehend" },
+            { base: "wear", presentParticiple: "wearing", pastParticiple: "worn", meaning: "to have on body" },
+            { base: "win", presentParticiple: "winning", pastParticiple: "won", meaning: "to be victorious" },
+            { base: "become", presentParticiple: "becoming", pastParticiple: "become", meaning: "to change into" },
+            { base: "bring", presentParticiple: "bringing", pastParticiple: "brought", meaning: "to carry" },
+            { base: "buy", presentParticiple: "buying", pastParticiple: "bought", meaning: "to purchase" },
+            { base: "catch", presentParticiple: "catching", pastParticiple: "caught", meaning: "to capture" },
+            { base: "draw", presentParticiple: "drawing", pastParticiple: "drawn", meaning: "to sketch" },
+            { base: "dream", presentParticiple: "dreaming", pastParticiple: "dreamed,dreamt", meaning: "to imagine while asleep" },
+            { base: "fall", presentParticiple: "falling", pastParticiple: "fallen", meaning: "to drop" },
+            { base: "feel", presentParticiple: "feeling", pastParticiple: "felt", meaning: "to experience emotion" },
+            { base: "fight", presentParticiple: "fighting", pastParticiple: "fought", meaning: "to combat" },
+            { base: "freeze", presentParticiple: "freezing", pastParticiple: "frozen", meaning: "to become ice" },
+            { base: "grow", presentParticiple: "growing", pastParticiple: "grown", meaning: "to increase size" },
+            { base: "hang", presentParticiple: "hanging", pastParticiple: "hung", meaning: "to suspend" },
+            { base: "hide", presentParticiple: "hiding", pastParticiple: "hidden", meaning: "to conceal" },
+            { base: "hold", presentParticiple: "holding", pastParticiple: "held", meaning: "to grasp" },
+            { base: "hurt", presentParticiple: "hurting", pastParticiple: "hurt", meaning: "to cause pain" },
+            { base: "lay", presentParticiple: "laying", pastParticiple: "laid", meaning: "to put down" },
+            { base: "lead", presentParticiple: "leading", pastParticiple: "led", meaning: "to guide" },
+            { base: "lend", presentParticiple: "lending", pastParticiple: "lent", meaning: "to give temporarily" },
+            { base: "lie", presentParticiple: "lying", pastParticiple: "lain", meaning: "to recline" },
+            { base: "light", presentParticiple: "lighting", pastParticiple: "lit", meaning: "to ignite" },
+            { base: "lose", presentParticiple: "losing", pastParticiple: "lost", meaning: "to misplace" },
+            { base: "pay", presentParticiple: "paying", pastParticiple: "paid", meaning: "to give money" },
+            { base: "prove", presentParticiple: "proving", pastParticiple: "proved,proven", meaning: "to demonstrate" },
+            { base: "put", presentParticiple: "putting", pastParticiple: "put", meaning: "to place" },
+            { base: "quit", presentParticiple: "quitting", pastParticiple: "quit", meaning: "to stop" },
+            { base: "ring", presentParticiple: "ringing", pastParticiple: "rung", meaning: "to sound a bell" },
+            { base: "rise", presentParticiple: "rising", pastParticiple: "risen", meaning: "to go up" },
+            { base: "say", presentParticiple: "saying", pastParticiple: "said", meaning: "to utter" },
+            { base: "sell", presentParticiple: "selling", pastParticiple: "sold", meaning: "to exchange for money" },
+            { base: "send", presentParticiple: "sending", pastParticiple: "sent", meaning: "to dispatch" },
+            { base: "shake", presentParticiple: "shaking", pastParticiple: "shaken", meaning: "to vibrate" },
+            { base: "shine", presentParticiple: "shining", pastParticiple: "shone", meaning: "to emit light" },
+            { base: "shoot", presentParticiple: "shooting", pastParticiple: "shot", meaning: "to fire a weapon" },
+            { base: "show", presentParticiple: "showing", pastParticiple: "shown", meaning: "to display" },
+            { base: "shut", presentParticiple: "shutting", pastParticiple: "shut", meaning: "to close" },
+            { base: "sink", presentParticiple: "sinking", pastParticiple: "sunk", meaning: "to go under water" },
+            { base: "slide", presentParticiple: "sliding", pastParticiple: "slid", meaning: "to glide" },
+            { base: "smell", presentParticiple: "smelling", pastParticiple: "smelled,smelt", meaning: "to perceive odor" },
+            { base: "spell", presentParticiple: "spelling", pastParticiple: "spelled,spelt", meaning: "to write letters" },
+            { base: "spend", presentParticiple: "spending", pastParticiple: "spent", meaning: "to use time/money" },
+            { base: "spill", presentParticiple: "spilling", pastParticiple: "spilled,spilt", meaning: "to cause to fall" },
+            { base: "spread", presentParticiple: "spreading", pastParticiple: "spread", meaning: "to extend" },
+            { base: "stand", presentParticiple: "standing", pastParticiple: "stood", meaning: "to be upright" },
+            { base: "steal", presentParticiple: "stealing", pastParticiple: "stolen", meaning: "to take unlawfully" },
+            { base: "stick", presentParticiple: "sticking", pastParticiple: "stuck", meaning: "to adhere" },
+            { base: "sting", presentParticiple: "stinging", pastParticiple: "stung", meaning: "to prick" },
+            { base: "strike", presentParticiple: "striking", pastParticiple: "struck", meaning: "to hit" },
+            { base: "swear", presentParticiple: "swearing", pastParticiple: "sworn", meaning: "to promise" },
+            { base: "sweep", presentParticiple: "sweeping", pastParticiple: "swept", meaning: "to clean with broom" },
+            { base: "swing", presentParticiple: "swinging", pastParticiple: "swung", meaning: "to move back and forth" },
+            { base: "teach", presentParticiple: "teaching", pastParticiple: "taught", meaning: "to instruct" },
+            { base: "tear", presentParticiple: "tearing", pastParticiple: "torn", meaning: "to rip" },
+            { base: "throw", presentParticiple: "throwing", pastParticiple: "thrown", meaning: "to toss" },
+            { base: "wake", presentParticiple: "waking", pastParticiple: "woken", meaning: "to stop sleeping" },
+            { base: "win", presentParticiple: "winning", pastParticiple: "won", meaning: "to be victorious" },
+            { base: "wind", presentParticiple: "winding", pastParticiple: "wound", meaning: "to twist" },
+            { base: "withdraw", presentParticiple: "withdrawing", pastParticiple: "withdrawn", meaning: "to remove" }
+        ];
+
+        // Quiz state
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = {}; // Store user answers for each question
+
+        // DOM elements
+        const baseVerbEl = document.getElementById('base-verb');
+        const verbMeaningEl = document.getElementById('verb-meaning');
+        const presentInput = document.getElementById('present-participle');
+        const pastInput = document.getElementById('past-participle');
+        const currentScoreEl = document.getElementById('current-score');
+        const totalVerbsEl = document.getElementById('total-verbs');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const totalVerbsDisplay = document.getElementById('total-verbs-display');
+        const feedbackSection = document.getElementById('feedback-section');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackText = document.getElementById('feedback-text');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const checkBtn = document.getElementById('check-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const resultsModal = document.getElementById('results-modal');
+        const restartBtnModal = document.getElementById('restart-btn-modal');
+        const finalScoreEl = document.getElementById('final-score');
+        const correctCountEl = document.getElementById('correct-count');
+        const incorrectCountEl = document.getElementById('incorrect-count');
+        const finalMessageEl = document.getElementById('final-message');
+
+        // Initialize quiz
+        function initQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = {};
+            
+            totalVerbsEl.textContent = verbs.length;
+            totalVerbsDisplay.textContent = verbs.length;
+            currentScoreEl.textContent = '0';
+            updateProgressBar();
+            
+            showQuestion();
+        }
+
+        // Show current question
+        function showQuestion() {
+            const verb = verbs[currentQuestionIndex];
+            
+            // Clear previous inputs and feedback
+            presentInput.value = userAnswers[currentQuestionIndex]?.present || '';
+            pastInput.value = userAnswers[currentQuestionIndex]?.past || '';
+            presentInput.disabled = false;
+            pastInput.disabled = false;
+            
+            // Reset styling
+            presentInput.classList.remove('correct-answer', 'incorrect-answer');
+            pastInput.classList.remove('correct-answer', 'incorrect-answer');
+            
+            // Show question data
+            baseVerbEl.textContent = verb.base;
+            verbMeaningEl.textContent = `"${verb.meaning}"`;
+            
+            // Show saved answer feedback if available
+            if (userAnswers[currentQuestionIndex]) {
+                showFeedback(userAnswers[currentQuestionIndex]);
+            } else {
+                feedbackSection.classList.add('hidden');
+            }
+            
+            // Update navigation buttons
+            updateNavigation();
+        }
+
+        // Update navigation buttons
+        function updateNavigation() {
+            prevBtn.disabled = currentQuestionIndex === 0;
+            nextBtn.disabled = currentQuestionIndex === verbs.length - 1;
+            
+            if (currentQuestionIndex === verbs.length - 1) {
+                nextBtn.innerHTML = '<i data-lucide="check" class="mr-2 w-5 h-5"></i> Finish Quiz';
+            } else {
+                nextBtn.innerHTML = 'Next <i data-lucide="arrow-right" class="ml-2 w-5 h-5"></i>';
+            }
+            
+            if (currentQuestionIndex === 0) {
+                prevBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                prevBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        // Update progress bar
+        function updateProgressBar() {
+            const progress = ((currentQuestionIndex + 1) / verbs.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            progressText.innerHTML = `Verb ${currentQuestionIndex + 1} of ${verbs.length}`;
+        }
+
+        // Check answers
+        function checkAnswers() {
+            const verb = verbs[currentQuestionIndex];
+            const userPresent = presentInput.value.trim().toLowerCase();
+            const userPast = pastInput.value.trim().toLowerCase();
+            
+            // Normalize the correct answers
+            const correctPresent = verb.presentParticiple.toLowerCase();
+            const correctPastParts = verb.pastParticiple.toLowerCase().split(',');
+            
+            // Check if answers are correct
+            const presentCorrect = userPresent === correctPresent;
+            const pastCorrect = correctPastParts.includes(userPast);
+            
+            // Save user answers
+            userAnswers[currentQuestionIndex] = {
+                present: presentInput.value.trim(),
+                past: pastInput.value.trim(),
+                isPresentCorrect: presentCorrect,
+                isPastCorrect: pastCorrect,
+                base: verb.base,
+                correctPresent: verb.presentParticiple,
+                correctPast: verb.pastParticiple
+            };
+            
+            // Update inputs styling
+            if (presentCorrect) {
+                presentInput.classList.add('correct-answer');
+            } else {
+                presentInput.classList.add('incorrect-answer');
+            }
+            
+            if (pastCorrect) {
+                pastInput.classList.add('correct-answer');
+            } else {
+                pastInput.classList.add('incorrect-answer');
+            }
+            
+            // Disable inputs
+            presentInput.disabled = true;
+            pastInput.disabled = true;
+            
+            // Show feedback
+            showFeedback(userAnswers[currentQuestionIndex]);
+            
+            // Update score if both answers are correct
+            if (presentCorrect && pastCorrect) {
+                score++;
+                currentScoreEl.textContent = score;
+            }
+            
+            updateNavigation();
+        }
+
+        // Show feedback
+        function showFeedback(answerData) {
+            feedbackSection.classList.remove('hidden');
+            
+            if (answerData.isPresentCorrect && answerData.isPastCorrect) {
+                feedbackTitle.textContent = '🎉 Excellent! Both answers are correct!';
+                feedbackTitle.className = 'font-bold text-lg mb-2 text-green-600';
+                feedbackText.innerHTML = `The correct answers were:<br>
+                    Present: <strong>${answerData.correctPresent}</strong><br>
+                    Past: <strong>${answerData.correctPast}</strong>`;
+                feedbackSection.className = 'feedback-message bg-green-50 rounded-xl p-4 mb-6 text-center';
+            } else {
+                feedbackTitle.textContent = '📝 Good effort! Here are the correct answers:';
+                feedbackTitle.className = 'font-bold text-lg mb-2 text-blue-600';
+                
+                let feedbackMessage = '';
+                if (!answerData.isPresentCorrect) {
+                    feedbackMessage += `Present Participle should be: <strong>${answerData.correctPresent}</strong><br>`;
+                } else {
+                    feedbackMessage += `Present Participle: <strong>${answerData.correctPresent}</strong> ✅<br>`;
+                }
+                
+                if (!answerData.isPastCorrect) {
+                    feedbackMessage += `Past Participle should be: <strong>${answerData.correctPast}</strong>`;
+                } else {
+                    feedbackMessage += `Past Participle: <strong>${answerData.correctPast}</strong> ✅`;
+                }
+                
+                feedbackText.innerHTML = feedbackMessage;
+                feedbackSection.className = 'feedback-message bg-blue-50 rounded-xl p-4 mb-6 text-center';
+            }
+        }
+
+        // Navigate to previous question
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showQuestion();
+                updateProgressBar();
+            }
+        }
+
+        // Navigate to next question
+        function nextQuestion() {
+            if (currentQuestionIndex < verbs.length - 1) {
+                currentQuestionIndex++;
+                showQuestion();
+                updateProgressBar();
+            } else {
+                // End quiz
+                showFinalResults();
+            }
+        }
+
+        // Show final results
+        function showFinalResults() {
+            const correctCount = score;
+            const incorrectCount = verbs.length - score;
+            
+            finalScoreEl.textContent = `${correctCount}/${verbs.length}`;
+            correctCountEl.textContent = correctCount;
+            incorrectCountEl.textContent = incorrectCount;
+            
+            // Determine final message based on score
+            const percentage = (correctCount / verbs.length) * 100;
+            if (percentage === 100) {
+                finalMessageEl.textContent = "🌟 Perfect Score! You're a Particles Master! 🌟";
+            } else if (percentage >= 80) {
+                finalMessageEl.textContent = "🏆 Awesome job! You know your participles well!";
+            } else if (percentage >= 50) {
+                finalMessageEl.textContent = "👏 Good effort! Keep practicing to improve!";
+            } else {
+                finalMessageEl.textContent = "📚 Keep trying! Practice makes perfect!";
+            }
+            
+            resultsModal.classList.remove('hidden');
+        }
+
+        // Close modal and restart
+        function closeResultsModal() {
+            resultsModal.classList.add('hidden');
+            initQuiz();
+        }
+
+        // Event listeners
+        checkBtn.addEventListener('click', checkAnswers);
+        nextBtn.addEventListener('click', nextQuestion);
+        prevBtn.addEventListener('click', prevQuestion);
+        resetBtn.addEventListener('click', initQuiz);
+        restartBtnModal.addEventListener('click', closeResultsModal);
+
+        // Allow pressing Enter key to check answers
+        presentInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAnswers();
+            }
+        });
+
+        pastInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAnswers();
+            }
+        });
+
+        // Initialize the quiz
+        initQuiz();
+        
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+<script src="https://deepsite.hf.co/deepsite-badge.js"></script>
+</body>
+</html>
